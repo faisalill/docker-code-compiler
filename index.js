@@ -16,9 +16,9 @@ app.get('/about', (req, res) => {
 
 
 const cppRoute = require('./routes/route');
-app.use('/cpp', cppRoute);
+app.use('/execute', cppRoute);
 
 
 app.listen(process.env.PORT || 3000, () => {
-  console.log('Check out the app at http://localhost:3000/cpp');
+  console.log('Check out the app at http://localhost:3000/execute');
 });
