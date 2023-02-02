@@ -2,6 +2,7 @@
 const express = require('express');
 const app = express();
 
+
 app.use(express.json())
 
 app.get('/', (req, res) => {
@@ -14,9 +15,10 @@ app.get('/about', (req, res) => {
 });
 
 
-
-const cppRoute = require('./routes/route');
-app.use('/execute', cppRoute);
+(async () => {
+  let router = await import('./routes/route.cjs');
+  app.use('/execute', router.default);
+})()
 
 
 app.listen(process.env.PORT || 3000, () => {
