@@ -7,6 +7,8 @@ express.json();
 var programRunCount = 0
 var input = '';
 var code = ``;
+
+// function to execute the program for the first time
 const runProgramFirstTime = () => {
     setTimeout(() => {
       //spawns a child process to execute the program
@@ -39,15 +41,7 @@ const runProgramFirstTime = () => {
     }, 300);
   };
 
-
-
-
-router.get('/', (req, res) => {
-  var inputToBeConverted = req.body.input.split(',');
-  for(var i = 0; i < inputToBeConverted.length; i++){
-    input = input + inputToBeConverted[i] + '\n';
-  }
-  code = req.body.code;
+const cppExecute = () => {
   fs.writeFile('./programs/main.cpp', code, (err) => {
     if (err){
       console.log(err);
@@ -67,6 +61,18 @@ router.get('/', (req, res) => {
    });
     }
   });
+};
+
+router.get('/', (req, res) => {
+  var inputToBeConverted = req.body.input.split(',');
+  for(var i = 0; i < inputToBeConverted.length; i++){
+    input = input + inputToBeConverted[i] + '\n';
+  }
+  code = req.body.code;
+  var language = req.body.language;
+  if(language === 'cpp'){
+    cppExecute();
+  }
  
 });
 
