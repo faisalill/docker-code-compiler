@@ -1,0 +1,1 @@
+const formattedCode = code.replace(/\n/g, '\\n').replace(/\"/g, '\\"');
