@@ -20,7 +20,7 @@ const cppExecute = () => {
   //executes the command to compile the file and give program.exe as output
   exec('g++ ./programs/main.cpp -o output/main.exe')
   //watches the current directory for any changes 
-   fs.watch('./output', (eventType, filename) => {
+   const cppWatcher = fs.watch('./output', (eventType, filename) => {
      // if the file that is changed is program.exe then it will execute the program
        if (filename === 'main.exe') {
          if(programRunCount === 0){
@@ -52,6 +52,12 @@ const cppExecute = () => {
                 programRunCount = 0;
                 // resets the input to an empty string so that the input can be taken again
                 input = '';
+                //closes the watcher
+                cppWatcher.close();
+                //removes the program.exe file
+                removeFile('./output/main.exe');
+                //removes the main.cpp file
+                removeFile('./programs/main.cpp');
               }
             });
           }, 300);
@@ -70,6 +76,7 @@ const pythonExecute = () => {
      console.log(err);
    }
    else{
+    //spawns a child process to execute the program
     const program = spawn('python', ['./programs/main.py']);
     program.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
@@ -80,6 +87,7 @@ const pythonExecute = () => {
     }
     );
     if(input !== ''){
+      //writes data to the child process
       program.stdin.write(input);
       program.stdin.end();
     }
@@ -90,8 +98,12 @@ const pythonExecute = () => {
     program.on('exit', (code) => {
       if (code === 0) {
         console.log(`Exited with code: ${code}`);
+        // resets the programRunCount to 0 so that the program can be executed again
         programRunCount = 0;
+        // resets the input to an empty string so that the input can be taken again
         input = '';
+        //removes the main.py file
+        removeFile('./programs/main.py');
       }
     }
     );  
@@ -108,7 +120,7 @@ const cExecute = () => {
   //executes the command to compile the file and give program.exe as output
   exec('gcc ./programs/Cprogram.c -o output/Cprogram.exe')
   //watches the current directory for any changes 
-   fs.watch('./output', (eventType, filename) => {
+   const cWatcher = fs.watch('./output', (eventType, filename) => {
      // if the file that is changed is program.exe then it will execute the program
        if (filename === 'Cprogram.exe') {
          if(programRunCount === 0){
@@ -140,6 +152,12 @@ const cExecute = () => {
                 programRunCount = 0;
                 // resets the input to an empty string so that the input can be taken again
                 input = '';
+                //closes the watcher
+                cWatcher.close();
+                //removes the Cprogram.exe file
+                removeFile('./output/Cprogram.exe');
+                //removes the Cprogram.c file
+                removeFile('./programs/Cprogram.c');
               }
             });
           }, 300);
