@@ -1,9 +1,8 @@
-const express = require('express');
-const fs = require('fs');
-const spawn = require('child_process').spawn;
-const exec = require('child_process').exec;
+import express from 'express';
+import fs from 'fs';
+import {spawn, exec} from 'child_process';
 const router = express.Router();
-
+import { removeFile } from '../functions/functions.js';
 
 express.json();
 var programRunCount = 0
@@ -101,7 +100,7 @@ const pythonExecute = () => {
 }
 
 router.get('/', (req, res) => {
-
+  
   var inputToBeConverted = req.body.input.split(',');
   for(var i = 0; i < inputToBeConverted.length; i++){
     input = input + inputToBeConverted[i] + '\n';
@@ -117,4 +116,4 @@ router.get('/', (req, res) => {
  
 });
 
-module.exports = router;
+export default router;

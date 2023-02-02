@@ -1,5 +1,6 @@
 //write a basic express app that listens on port 3000 or process.end.PORT
-const express = require('express');
+import express from 'express';
+import router from './routes/route.mjs';
 const app = express();
 
 
@@ -14,12 +15,7 @@ app.get('/about', (req, res) => {
   res.send(data); 
 });
 
-
-(async () => {
-  let router = await import('./routes/route.cjs');
-  app.use('/execute', router.default);
-})()
-
+app.use('/execute', router);
 
 app.listen(process.env.PORT || 3000, () => {
   console.log('Check out the app at http://localhost:3000/execute');
