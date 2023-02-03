@@ -1,9 +1,9 @@
 import express from 'express';
 import fs from 'fs';
 import {spawn, exec} from 'child_process';
-const router = express.Router();
 import { removeFile } from '../functions/functions.js';
 
+const router = express.Router();
 express.json();
 var programRunCount = 0
 var input = '';
@@ -169,6 +169,10 @@ const cExecute = () => {
   });
 }
 
+const rustExecute = () => {
+  console.log('Rust program executed');
+}
+
 router.get('/', (req, res) => {
   var inputToBeConverted = req.body.input.split(',');
   for(var i = 0; i < inputToBeConverted.length; i++){
@@ -187,6 +191,10 @@ router.get('/', (req, res) => {
   else if(language === 'c'){
     cExecute();
     res.send('C program success')
+  }
+  else if(language === 'rust'){
+    rustExecute();
+    res.send('Rust program success')
   }
  
 });
