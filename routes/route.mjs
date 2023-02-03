@@ -18,15 +18,15 @@ const cppExecute = () => {
     }
     else{
   //executes the command to compile the file and give program.exe as output
-  exec('g++ ./programs/main.cpp -o output/main.exe')
+  exec('g++ ./programs/main.cpp -o output/main.out')
   //watches the current directory for any changes 
    const cppWatcher = fs.watch('./output', (eventType, filename) => {
      // if the file that is changed is program.exe then it will execute the program
-       if (filename === 'main.exe') {
+       if (filename === 'main.out') {
          if(programRunCount === 0){
           setTimeout(() => {
             //spawns a child process to execute the program
-            const program = spawn('./output/main.exe');
+            const program = spawn('./output/main.out');
             //listens for data from the child process
             program.stdout.on('data', (data) => {
               console.log(`stdout: ${data}`);
@@ -55,7 +55,7 @@ const cppExecute = () => {
                 //closes the watcher
                 cppWatcher.close();
                 //removes the program.exe file
-                removeFile('./output/main.exe');
+                removeFile('./output/main.out');
                 //removes the main.cpp file
                 removeFile('./programs/main.cpp');
               }
@@ -77,7 +77,7 @@ const pythonExecute = () => {
    }
    else{
     //spawns a child process to execute the program
-    const program = spawn('python', ['./programs/main.py']);
+    const program = spawn('python3', ['./programs/main.py']);
     program.stdout.on('data', (data) => {
       console.log(`stdout: ${data}`);
     }
@@ -118,15 +118,15 @@ const cExecute = () => {
     }
     else{
   //executes the command to compile the file and give program.exe as output
-  exec('gcc ./programs/Cprogram.c -o output/Cprogram.exe')
+  exec('gcc ./programs/Cprogram.c -o output/Cprogram.out')
   //watches the current directory for any changes 
    const cWatcher = fs.watch('./output', (eventType, filename) => {
      // if the file that is changed is program.exe then it will execute the program
-       if (filename === 'Cprogram.exe') {
+       if (filename === 'Cprogram.out') {
          if(programRunCount === 0){
           setTimeout(() => {
             //spawns a child process to execute the program
-            const program = spawn('./output/Cprogram.exe');
+            const program = spawn('./output/Cprogram.out');
             //listens for data from the child process
             program.stdout.on('data', (data) => {
               console.log(`stdout: ${data}`);
@@ -155,7 +155,7 @@ const cExecute = () => {
                 //closes the watcher
                 cWatcher.close();
                 //removes the Cprogram.exe file
-                removeFile('./output/Cprogram.exe');
+                removeFile('./output/Cprogram.out');
                 //removes the Cprogram.c file
                 removeFile('./programs/Cprogram.c');
               }
@@ -174,9 +174,11 @@ const rustExecute = () => {
 }
 
 router.get('/', (req, res) => {
-  var inputToBeConverted = req.body.input.split(',');
+  if(req.body.input){
+    var inputToBeConverted = req.body.input.split(',');
   for(var i = 0; i < inputToBeConverted.length; i++){
     input = input + inputToBeConverted[i] + '\n';
+  }
   }
   code = req.body.code;
   language = req.body.language;
