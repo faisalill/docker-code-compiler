@@ -227,6 +227,38 @@ const rustExecute = () => {
   });
 }
 
+const javascriptExecute = () => {
+  fs.writeFile('./programs/javascriptProgram.js', code, (err) => {
+    if (err){
+      console.log(err);
+    }
+    else{
+  const program = spawn('node', ['./programs/javascriptProgram.js']);
+  program.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+  });
+  program.stderr.on('data', (data) => {
+    console.log(`stderr: ${data}`);
+  });
+  if(input !== ''){
+    program.stdin.write(input);
+    program.stdin.end();
+  }
+  program.on('error', (error) => {
+    console.log(`error: ${error}`);
+  });
+  program.on('exit', (code) => {
+    if (code === 0) {
+      console.log(`Exited with code: ${code}`);
+      input = '';
+      removeFile('./programs/javascriptProgram.js');
+    }
+  });
+    }
+  });
+}
+
+
 router.get('/', (req, res) => {
   if(req.body.input){
     var inputToBeConverted = req.body.input.split(',');
@@ -251,6 +283,10 @@ router.get('/', (req, res) => {
   else if(language === 'rust'){
     rustExecute();
     res.send('Rust program success')
+  }
+  else if(language === 'javascript'){
+    javascriptExecute();
+    res.send('Javascript program success')
   }
  
 });
