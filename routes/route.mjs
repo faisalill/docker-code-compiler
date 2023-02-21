@@ -268,7 +268,7 @@ router.get('/', (req, res) => {
   }
   code = req.body.code;
   language = req.body.language;
-  if(language === 'c++'){
+  if(language === 'cpp'){
     cppExecute();
     res.send('C++ program success')
   }
@@ -276,7 +276,7 @@ router.get('/', (req, res) => {
     pythonExecute();
     res.send('Python program success')
   }
-  else if(language === 'c'){
+  else if(language === 'objective-c'){
     cExecute();
     res.send('C program success')
   }

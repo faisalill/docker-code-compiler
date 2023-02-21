@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('It is workgin');
+  res.send('It is working');
 }); 
 
 app.get('/about', (req, res) => {
@@ -17,6 +17,6 @@ app.get('/about', (req, res) => {
 
 app.use('/execute', router);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log('Check out the app at http://localhost:3000/execute');
+app.listen(process.env.PORT || 3001, () => {
+  console.log('Check out the app at http://localhost:3001/execute');
 });
