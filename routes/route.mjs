@@ -2,6 +2,8 @@ import express from 'express';
 import fs from 'fs';
 import {spawn, exec} from 'child_process';
 import { removeFile } from '../functions/functions.js';
+import { NodeVM } from 'vm2';
+import stream from 'stream'
 
 const router = express.Router();
 express.json();
@@ -9,7 +11,7 @@ var programRunCount = 0
 var input = '';
 var code = ``;
 var language='';
-
+var logMessage = '';
 //executes the command to compile the file and give program.exe as output
 const cppExecute = () => {
   fs.writeFile('./programs/main.cpp', code, (err) => {
@@ -228,38 +230,17 @@ const rustExecute = () => {
 }
 
 const javascriptExecute = () => {
-  fs.writeFile('./programs/javascriptProgram.js', code, (err) => {
-    if (err){
-      console.log(err);
-    }
-    else{
-  const program = spawn('node', ['./programs/javascriptProgram.js']);
-  program.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-  program.stderr.on('data', (data) => {
-    console.log(`stderr: ${data}`);
-  });
-  if(input !== ''){
-    program.stdin.write(input);
-    program.stdin.end();
+  //creates a sandbox for the code to be executed in
+  //it only allows the console.log function to be used
+  const sandbox = {
+    console: console,
   }
-  program.on('error', (error) => {
-    console.log(`error: ${error}`);
-  });
-  program.on('exit', (code) => {
-    if (code === 0) {
-      console.log(`Exited with code: ${code}`);
-      input = '';
-      removeFile('./programs/javascriptProgram.js');
-    }
-  });
-    }
-  });
+  const callFunction = new Function('sandbox', code);
+  return callFunction(sandbox)
 }
 
-
-router.get('/', (req, res) => {
+router.post('/', (req, res) => {
+  console.log(logMessage)
   if(req.body.input){
     var inputToBeConverted = req.body.input.split(',');
   for(var i = 0; i < inputToBeConverted.length; i++){
@@ -285,8 +266,36 @@ router.get('/', (req, res) => {
     res.send('Rust program success')
   }
   else if(language === 'javascript'){
-    javascriptExecute();
-    res.send('Javascript program success')
+    
+   fs.writeFile('./programs/jsProgram.js', code, (err)=>{
+      if(err){
+        console.log(err);
+      }
+      else{
+        // console.log("worked")
+        // res.send('Javascript program success')
+        const check = spawn('node',['./programs/jsProgram.js']);
+        check.stdout.on('data', (data) => {
+          res.send(`stdout: ${data}`);
+        })
+        check.stderr.on('data', (data) => {
+          res.send(`stderr: ${data}`);
+        }
+        );
+        check.on('error', (error) => {
+          res.send(`error: ${error}`);
+        }
+        );
+        check.on('exit', (code) => {
+          if (code === 0) {
+            console.log(`Exited with code: ${code}`);
+           removeFile('./programs/jsProgram.js');
+          }
+        }
+        );
+      }
+   })
+
   }
  
 });
